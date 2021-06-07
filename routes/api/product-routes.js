@@ -38,7 +38,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // create new product
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -47,37 +47,12 @@ router.post("/", (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
-  // try {
-  //   const productData = await Product.create({
-  //     product_name: req.body.product_name,
-  //     price: req.body.price,
-  //     stock: req.body.stock,
-  //     category_id: req.body.category_id,
-  //     tagIds: req.body.tagIds,
-  //   });
-  //   if (req.body.tagIds.length) {
-  //     const productTagIdArr = req.body.tagIds.map((tag_id) => {
-  //       return {
-  //         product_id: product.id,
-  //         tag_id,
-  //       };
-  //     });
-  //     return ProductTag.bulkCreate(productTagIdArr);
-  //   } else {
-  //     res.status(200).json(product);
-  //   }
-  //   res.status(200).json(productData);
-  // } catch (error) {
-  //   console.log(error);
-  //   res.status(400).json(error);
-  // }
-
   Product.create({
     product_name: req.body.product_name,
     price: req.body.price,
     stock: req.body.stock,
     category_id: req.body.category_id,
-    tagIds: req.body.tagIds,
+    tagIds: req.body.tag_id,
   })
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
@@ -98,6 +73,32 @@ router.post("/", (req, res) => {
       console.log(err);
       res.status(400).json(err);
     });
+
+  // try {
+  //   await Product.create({
+  //     product_name: req.body.product_name,
+  //     price: req.body.price,
+  //     stock: req.body.stock,
+  //     category_id: req.body.category_id,
+  //     tagIds: req.body.tagIds,
+  //   });
+  //   // if there's product tags, we need to create pairings to bulk create in the ProductTag model
+  //   if (req.body.tagIds.length) {
+  //     const productTagIdArr = req.body.tagIds.map((tag_id) => {
+  //       return {
+  //         product_id: product.id,
+  //         tag_id,
+  //       };
+  //     });
+  //     return ProductTag.bulkCreate(productTagIdArr);
+  //   }
+  //   // if no product tags, just respond
+  //   res.status(200).json(product);
+
+  //   res.status(200).json(productTagIds);
+  // } catch (error) {
+  //   res.status(400).json(error);
+  // }
 });
 
 // update product
